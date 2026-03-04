@@ -1,0 +1,3 @@
+victoria:
+  metrics:
+    url: http://localhost:8428/api/v1/import/prometheus
