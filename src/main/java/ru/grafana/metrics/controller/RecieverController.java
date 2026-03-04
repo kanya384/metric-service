@@ -2,7 +2,6 @@ package ru.grafana.metrics.controller;
 
 import com.github.luben.zstd.Zstd;
 import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,9 +9,7 @@ import org.xerial.snappy.Snappy;
 import ru.grafana.metrics.dto.prometheus.Remote;
 import ru.grafana.metrics.dto.prometheus.Types;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 @RestController
 public class RecieverController {
@@ -22,6 +19,10 @@ public class RecieverController {
         // 1. Читаем сырые данные из запроса
         byte[] compressedData = inputStream.readAllBytes();
         byte[] uncompressedData = null;
+
+        try (OutputStream outputStreamWriter = new FileOutputStream("prometheus-metrics-example-zstd.bin")) {
+            outputStreamWriter.write(compressedData);
+        }
 
         if (contentEncoding.equals("snappy")) {
             uncompressedData = Snappy.uncompress(compressedData);
