@@ -20,7 +20,7 @@ public class RecieverController {
         byte[] compressedData = inputStream.readAllBytes();
         byte[] uncompressedData = null;
 
-        try (OutputStream outputStreamWriter = new FileOutputStream("prometheus-metrics-example-zstd.bin")) {
+        try (OutputStream outputStreamWriter = new FileOutputStream("prometheus-metrics-example-zstd_.bin")) {
             outputStreamWriter.write(compressedData);
         }
 
