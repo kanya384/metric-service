@@ -4,21 +4,23 @@ import com.github.luben.zstd.Zstd;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.xerial.snappy.Snappy;
 import ru.grafana.metrics.dto.prometheus.Remote;
 import ru.grafana.metrics.dto.prometheus.Types;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @RestController
 public class RecieverController {
     @PostMapping("/metrics")
-    public String recive(HttpServletRequest request) throws Exception {
-        String contentEncoding = request.getHeader("Content-Encoding");
+    public String recive(@RequestHeader("Content-Encoding") String contentEncoding, InputStream inputStream) throws Exception {
 
         // 1. Читаем сырые данные из запроса
-        byte[] compressedData = readAllBytes(request.getInputStream());
+        byte[] compressedData = inputStream.readAllBytes();
         byte[] uncompressedData = null;
 
         if (contentEncoding.equals("snappy")) {
