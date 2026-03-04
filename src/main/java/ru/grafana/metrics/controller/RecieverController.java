@@ -20,14 +20,16 @@ public class RecieverController {
         byte[] compressedData = inputStream.readAllBytes();
         byte[] uncompressedData = null;
 
-        try (OutputStream outputStreamWriter = new FileOutputStream("prometheus-metrics-example-zstd_.bin")) {
-            outputStreamWriter.write(compressedData);
-        }
+
 
         if (contentEncoding.equals("snappy")) {
             uncompressedData = Snappy.uncompress(compressedData);
         } else if (contentEncoding.equals("zstd")) {
             uncompressedData = Zstd.decompress(compressedData);
+        }
+
+        try (OutputStream outputStreamWriter = new FileOutputStream("prometheus-metrics-example-uncompressed.bin")) {
+            outputStreamWriter.write(uncompressedData);
         }
 
         Remote.WriteRequest writeRequest = Remote.WriteRequest.parseFrom(uncompressedData);
